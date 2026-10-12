@@ -3,7 +3,7 @@
 
 #include "perceptron.h"
 
-/*  nb est la taille des vecteurs d'entree et de sortie - in et out */
+/*  nb est la taille des vecteurs d'entree et de sortie - in et out. Fonction récupérer du prof */
 void softmax(const double in[], double out[], int nb) {
     /* Trouver la valeur max pour la stabilité numérique */
     double max_softmax = in[0];

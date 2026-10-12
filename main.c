@@ -4,12 +4,12 @@
 #include "perceptron.h"
 
 int main() {
-    float longueur_sepale[150], largeur_sepale[150], longueur_petale[150], largeur_petale[150];
-    int famille[150];   // Rempli par des 0, 1, 2, respectivement les famille 0, 1 et 2
+    float longueur_sepale[150], largeur_sepale[150], longueur_petale[150], largeur_petale[150]; // Les données d'entrées
+    int famille[150];   // Rempli par des 0, 1, 2, respectivement les famille 0, 1 et 2 (50 premiers sont de la famille 0,les 50 suivant de la famille 1 et les 50 derniers de a famille)
     double predictions[3];  // Stocke les probabilités d'appartenance à chaque famille
     int i, j;
 
-    double jeux_test_lineaire[NB_data][4] = {       // vecteurs de test linearisés
+    double jeux_test_lineaire[NB_data][4] = {       // vecteurs de test linearisés (donné par le prof)
         {-0.613472, 0.192301, -4.148675, -0.758351},
         {-0.778532, -0.024905, -4.148675, -0.758351},
         {-0.943593, 0.061977, -4.324615, -0.758351},
@@ -33,7 +33,7 @@ int sortie_attendue[NB_data] = {0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2};   
 /* 3 neurones couches 2 et 3 sorties */		
 /* Les elements [TAILLE_entree][] de coef_MAT1 contiennent les biais*/
 /* Les elements [NB_neurones_C1][] de coef_MAT2 contiennent les biais*/
-/* 15 sur 15 résultats (100%) correct avec cet ensemble de coefficients */
+/* 15 sur 15 résultats (100%) correct avec cet ensemble de coefficients (ne donne pas 100% dans chaque categorie cependant)*/
 double coef_MAT1[TAILLE_entree+1][NB_neurones_C1] = 
 			{{ +1.70, +2.58, -1.87}, 
 			{+1.56, +4.04, -5.81}, 
@@ -47,15 +47,16 @@ double coef_MAT2[NB_neurones_C1+1][NB_neurones_C2] =
 			{-3.43, -5.32, +5.60}, 
 			{-3.30, +1.42, -1.22 }};
 
-    lire_donnees(longueur_sepale, largeur_sepale, longueur_petale, largeur_petale, famille);
-    normalise_tout(longueur_sepale, largeur_sepale, longueur_petale, largeur_petale);
-    for (i = 0; i < NB_data; i++) {
-        prediction(jeux_test_lineaire[i], coef_MAT1, coef_MAT2, predictions);
-        for (j = 0; j < 3; j++) {
-            printf("%f | ", predictions[j]);
-        }
-        printf("\n");
+ /* Lire_donnes et normalise_tout pas utile pour la preparation, mais pour la seance 1 oui*/       
+lire_donnees(longueur_sepale, largeur_sepale, longueur_petale, largeur_petale, famille); // Permet d'extraire toute les données du tableau datairis.csv et de les stocker dans les differnetes listes
+normalise_tout(longueur_sepale, largeur_sepale, longueur_petale, largeur_petale); // Normalise toute nos valeurs (qui le sont deja pour celles de test)
+for (i = 0; i < NB_data; i++) {
+    prediction(jeux_test_lineaire[i], coef_MAT1, coef_MAT2, predictions); // Cette fonction met les biais au bon endroit et donne pour chaque neurone le bon coeff. Elle prends aussi en parametres les entrées de la fleur. Surement a reecrire vu que nos données ne sont pas tous au meme endroit.
+    for (j = 0; j < 3; j++) {
+        printf("%f | ", predictions[j]);
     }
+    printf("\n");
+}
 
-    return 0;
+return 0;
 }

@@ -5,23 +5,27 @@
 
 #include "donnees.h"
 
-void lire_donnees(float longueur_sepale[150], float largeur_sepale[150], float longueur_petale[150], float largeur_petale[150], int famille[150]) {
+void lire_donnees(float longueur_sepale[150], float largeur_sepale[150], float longueur_petale[150], float largeur_petale[150], int famille[150]) { // Ouvre le ficher data.iris avec les vals et les range ds le tableau
     FILE *fichier;
-    char buffer[100];
-    int i = 0;
-
+    int i=0;
+    int retour_scanf;
     fichier = fopen("data_iris.csv", "r");
     if (fichier == NULL) {
         printf("Erreur lors de l'ouverture de data_iris.csv !\n");
         return;
     }
     else {
-        while (fgets(buffer, 100, fichier) != NULL) {    // Lit toute les lignes et stock jusqu'à 100 caractères dans buffer, renvoie NULL lorsqu'on arrive à la fin du fichier
-            sscanf(buffer, "%f;%f;%f;%f;%d", &longueur_sepale[i], &largeur_sepale[i], &longueur_petale[i], &largeur_petale[i], &famille[i]);   // Stock chaque donnée dans son tableau respectif
-            i++;
-        }
-        fclose(fichier);
+        while ( (retour_scanf = fscanf(fichier, "%f;%f;%f;%f;%d", &longueur_sepale[i], &largeur_sepale[i], &longueur_petale[i], &largeur_petale[i], &famille[i]) )  != EOF) // fscan renvoie le nombre d'affectation qu'elle a reussit a faire. S'il y en a moins que 5, c'est qu'il ya un prblm, ou qu'on est a la fin du ficher 
+        {
+            if (retour_scanf == 5) {
+                i++;
+            } else {
+                printf("Erreur de format rencontrée à la ligne %d.\n", i + 1);
+                break; 
+            }
+        } 
     }
+    fclose(fichier);
 }
 
 float moyenne(float donnees[150]) {
