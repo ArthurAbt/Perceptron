@@ -6,8 +6,8 @@
 int main() {
     float longueur_sepale[150], largeur_sepale[150], longueur_petale[150], largeur_petale[150]; // Les données d'entrées
     int famille[150];   // Rempli par des 0, 1, 2, respectivement les famille 0, 1 et 2 (50 premiers sont de la famille 0,les 50 suivant de la famille 1 et les 50 derniers de a famille)
-    double predictions[3];  // Stocke les probabilités d'appartenance à chaque famille
-    int i, j;
+    double resultats[NB_data][2];  // Stocke les familles et les probabilités d'appartenance à chaque famille
+    int i;
 
     double jeux_test_lineaire[NB_data][4] = {       // vecteurs de test linearisés (donné par le prof)
         {-0.613472, 0.192301, -4.148675, -0.758351},
@@ -51,10 +51,8 @@ double coef_MAT2[NB_neurones_C1+1][NB_neurones_C2] =
 lire_donnees(longueur_sepale, largeur_sepale, longueur_petale, largeur_petale, famille); // Permet d'extraire toute les données du tableau datairis.csv et de les stocker dans les differnetes listes
 normalise_tout(longueur_sepale, largeur_sepale, longueur_petale, largeur_petale); // Normalise toute nos valeurs (qui le sont deja pour celles de test)
 for (i = 0; i < NB_data; i++) {
-    prediction(jeux_test_lineaire[i], coef_MAT1, coef_MAT2, predictions); // Cette fonction met les biais au bon endroit et donne pour chaque neurone le bon coeff. Elle prends aussi en parametres les entrées de la fleur. Surement a reecrire vu que nos données ne sont pas tous au meme endroit.
-    for (j = 0; j < 3; j++) {
-        printf("%f | ", predictions[j]);
-    }
+    prediction(jeux_test_lineaire[i], coef_MAT1, coef_MAT2, resultats[i]); // Cette fonction met les biais au bon endroit et donne pour chaque neurone le bon coeff. Elle prends aussi en parametres les entrées de la fleur. Surement a reecrire vu que nos données ne sont pas tous au meme endroit.
+    printf("La fleur n°%d apparteint à la famille %f à %f %.\n", i, resultats[i][0], resultats[i][1]);
     printf("\n");
 }
 
