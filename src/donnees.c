@@ -5,7 +5,7 @@
 
 #include "donnees.h"
 
-void lire_donnees(float longueur_sepale[150], float largeur_sepale[150], float longueur_petale[150], float largeur_petale[150], int famille[150]) { // Ouvre le ficher data.iris avec les vals et les range ds le tableau
+void lire_donnees(float longueur_sepale[150], float largeur_sepale[150], float longueur_petale[150], float largeur_petale[150], int famille[150]) {
     FILE *fichier;
     int i=0;
     int retour_scanf;
@@ -15,7 +15,7 @@ void lire_donnees(float longueur_sepale[150], float largeur_sepale[150], float l
         return;
     }
     else {
-        while ( (retour_scanf = fscanf(fichier, "%f;%f;%f;%f;%d", &longueur_sepale[i], &largeur_sepale[i], &longueur_petale[i], &largeur_petale[i], &famille[i]) )  != EOF) // fscan renvoie le nombre d'affectation qu'elle a reussit a faire. S'il y en a moins que 5, c'est qu'il ya un prblm, ou qu'on est a la fin du ficher 
+        while ( (retour_scanf = fscanf(fichier, "%f;%f;%f;%f;%d", &longueur_sepale[i], &largeur_sepale[i], &longueur_petale[i], &largeur_petale[i], &famille[i]) )  != EOF) // fscanf renvoie le nombre d'affectation qu'elle a reussit a faire. S'il y en a moins que 5, c'est qu'il ya un prblm, ou qu'on est a la fin du ficher 
         {
             if (retour_scanf == 5) {
                 i++;
