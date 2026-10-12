@@ -34,4 +34,19 @@ void normalise(float donnees[150]);
  */
 void normalise_tout(float longueur_sepale[150], float largeur_sepale[150], float longueur_petale[150], float largeur_petale[150]);
 
+/***
+ * @brief Cette fonction trouve et affiche la famille d'appartenance de la fleur et sa probabilité
+ * @param fleur tableau contenant les 4 entrées de la fleur (longueur/largeur du sépale et longueur/largeur du pétale)
+ * @param resultats tableau qui stockera la famille et la proba d'appartenance à cette famille de la fleur
+ */
+void valdation_1_donnee(double fleur[4], double resultats[2]);
+
+/***
+ * @brief Cette fonction valide un jeu de données
+ * @param nb_fleurs nombre de fleurs à valider
+ * @param donnees matrice contenant l'ensemble des jeux de données
+ * @param famille tableau qui contiendra toutes les familles de chaque fleurs
+ */
+void validation_jeux_donnees(int nb_fleurs, double donnees[][4], int famille[]);
+
 #endif
