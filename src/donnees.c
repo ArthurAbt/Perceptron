@@ -6,17 +6,18 @@
 #include "donnees.h"
 #include "perceptron.h"
 
-void lire_donnees(double longueur_sepale[150], double largeur_sepale[150], double longueur_petale[150], double largeur_petale[150], double famille[150]) {
+void lire_donnees(double longueur_sepale[150], double largeur_sepale[150], double longueur_petale[150], double largeur_petale[150], int famille[150]) {
     FILE *fichier;
-    int i=0;
+    int i = 0;
     int retour_scanf;
-    fichier = fopen("data_iris.csv", "r");
+    
+    fichier = fopen("data_Iris.csv", "r");
     if (fichier == NULL) {
         printf("Erreur lors de l'ouverture de data_iris.csv !\n");
         return;
     }
     else {
-        while ( (retour_scanf = fscanf(fichier, "%lf;%lf;%lf;%lf;%lf", &longueur_sepale[i], &largeur_sepale[i], &longueur_petale[i], &largeur_petale[i], &famille[i]) )  != EOF) // fscanf renvoie le nombre d'affectation qu'elle a reussit a faire. S'il y en a moins que 5, c'est qu'il ya un prblm, ou qu'on est a la fin du ficher 
+        while ((retour_scanf = fscanf(fichier, "%lf;%lf;%lf;%lf;%d", &longueur_sepale[i], &largeur_sepale[i], &longueur_petale[i], &largeur_petale[i], &famille[i]) )  != EOF) // fscanf renvoie le nombre d'affectation qu'elle a reussit a faire. S'il y en a moins que 5, c'est qu'il ya un prblm, ou qu'on est a la fin du ficher 
         {
             if (retour_scanf == 5) {
                 i++;
@@ -66,7 +67,7 @@ void normalise_tout(double longueur_sepale[150], double largeur_sepale[150], dou
     return;
 }
 
-void validation_1_donnee(double fleur[4], double resultats[3]) {
+void validation_1_donnee(double fleur[4], double proba_familles[3]) {
     double coef_MAT1[TAILLE_entree+1][NB_neurones_C1] = {
 		{ +1.703661357392334, +2.763631108685933, -2.17236310620485}, 
 		{+1.560385693578073, +3.973334575425574, -5.687438139503607}, 
@@ -82,18 +83,5 @@ void validation_1_donnee(double fleur[4], double resultats[3]) {
 		{-3.31644629415654, +1.215105079193245, -1.007589578200665 }
     };
 
-    prediction(fleur, coef_MAT1, coef_MAT2, resultats); // Cette fonction met les biais au bon endroit et donne pour chaque neurone le bon coeff. Elle prends aussi en parametres les entrées de la fleur. Surement a reecrire vu que nos données ne sont pas tous au meme endroit.
-}
-
-void validation_jeux_donnees(int nb_fleurs, double donnees[][4], double famille[]) {
-    int i;
-
-    for (i = 0; i < nb_fleurs; i++) {
-        double resultats[2];
-
-        validation_1_donnee(donnees[i], resultats);
-        famille[i] = (int) resultats[0];
-        printf("%lf | ", famille[i]);
-    }
-    printf("\n");
+    prediction(fleur, coef_MAT1, coef_MAT2, proba_familles); // Cette fonction met les biais au bon endroit et donne pour chaque neurone le bon coeff. Elle prends aussi en parametres les entrées de la fleur. Surement a reecrire vu que nos données ne sont pas tous au meme endroit.
 }

@@ -5,7 +5,7 @@
  * @brief Cette fonction parcours le fichier data_iris.csv et écrit ses valeurs dans les les 4 tableaux en paramètres
  * @param famille Contient la famille (0, 1, 2) de chaque iris d'entrée
  */
-void lire_donnees(double longueur_sepale[150], double largeur_sepale[150], double longueur_petale[150], double largeur_petale[150], double famille[150]);
+void lire_donnees(double longueur_sepale[150], double largeur_sepale[150], double longueur_petale[150], double largeur_petale[150], int famille[150]);
 
 /***
  * @brief Cette fonction calcul la valeur moyenne des 150 valeurs passées en entrée
@@ -37,16 +37,8 @@ void normalise_tout(double longueur_sepale[150], double largeur_sepale[150], dou
 /***
  * @brief Cette fonction trouve et affiche la famille d'appartenance de la fleur et sa probabilité
  * @param fleur tableau contenant les 4 entrées de la fleur (longueur/largeur du sépale et longueur/largeur du pétale)
- * @param resultats tableau qui stockera la famille et la proba d'appartenance à cette famille de la fleur
+ * @param proba_familles proba d'appartenance à chaque famille
  */
-void validation_1_donnee(double fleur[4], double resultats[3]);
-
-/***
- * @brief Cette fonction valide un jeu de données
- * @param nb_fleurs nombre de fleurs à valider
- * @param donnees matrice contenant l'ensemble des jeux de données
- * @param famille tableau qui contiendra toutes les familles de chaque fleurs
- */
-void validation_jeux_donnees(int nb_fleurs, double donnees[][4], double famille[]);
+void validation_1_donnee(double fleur[4], double proba_familles[3]);
 
 #endif

@@ -27,8 +27,8 @@ void softmax(const double in[], double out[], int nb);
  * @param fleur tableau contenant les 4 caractéristique (longueur/largeur du sépale et longueur/largeur du pétale) de la fleur dont on cherche la famille
  * @param coef_MAT1 matrice contenant les coefficients et biais des neurones de la première couche, les premières lignes contiennent les coefficients qui pondèrent chaque entrée tandis que la dernière contient les biais de chaque neurone (de la couche 1)
  * @param coef_MAT2 matrice contenant les coefficients et biais des neurones de la seconde couche, les premières lignes contiennent les coefficients qui pondèrent chaque sortie de C1 et entrée de C2 tandis que la dernière contient les biais de chaque neurone (de la couche 2)
- * @param predictions tableau qui sera rempli avec la famille de la fleur et la probabilité d'appartenance à celle-ci. Ex : predictions[0] vaut 0 si la fleur appartient à la famille 0 et predictions[1] contiendra la probabilité que la fleur appartienne à la famille 0
+ * @param proba_familles proba d'appartenance à chaque famille
  */
-void prediction(double fleur[4], double coef_MAT1[TAILLE_entree+1][NB_neurones_C1], double coef_MAT2[NB_neurones_C1+1][NB_neurones_C2], double predictions[2]);
+void prediction(double fleur[4], double coef_MAT1[TAILLE_entree+1][NB_neurones_C1], double coef_MAT2[NB_neurones_C1+1][NB_neurones_C2], double probra_familles[3]);
 
 #endif

@@ -28,7 +28,7 @@ double act_tanh(double x) {
     return tanh(x);
 }
 
-void prediction(double fleur[4], double coef_MAT1[TAILLE_entree+1][NB_neurones_C1], double coef_MAT2[NB_neurones_C1+1][NB_neurones_C2], double resultats[3]) {
+void prediction(double fleur[4], double coef_MAT1[TAILLE_entree+1][NB_neurones_C1], double coef_MAT2[NB_neurones_C1+1][NB_neurones_C2], double proba_familles[3]) {
     double sortie_couche1[NB_neurones_C1], pre_softmax[NB_neurones_C2], somme;
     int i, j;
 
@@ -47,6 +47,6 @@ void prediction(double fleur[4], double coef_MAT1[TAILLE_entree+1][NB_neurones_C
         pre_softmax[i] = somme;
     }
     
-    softmax(pre_softmax, resultats, NB_neurones_C2);  // prediction_int contient les prédictions d'appartenance à chaque famille. Ex : predictionc_int[2] correspond à la probabilité que la fleur appartiennent à la famille 2
+    softmax(pre_softmax, proba_familles, NB_neurones_C2);  // prediction_int contient les prédictions d'appartenance à chaque famille. Ex : predictionc_int[2] correspond à la probabilité que la fleur appartiennent à la famille 2
     return;
 }
