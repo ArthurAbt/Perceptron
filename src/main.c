@@ -4,6 +4,7 @@
 #include "donnees.h"
 #include "perceptron.h"
 #include "orchestrateur.h"
+#include "memoire.h"
 
 int main() {
     double longueur_sepale[150], largeur_sepale[150], longueur_petale[150], largeur_petale[150]; // 4 tableaux de 150 doubles qui seront ensuite rempis avec les caractéristiques des données d'entrées

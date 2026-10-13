@@ -11,7 +11,7 @@ void lire_donnees(double longueur_sepale[150], double largeur_sepale[150], doubl
     int i = 0;
     int retour_scanf;
     
-    fichier = fopen("data_Iris.csv", "r");
+    fichier = fopen("data/data_Iris.csv", "r");
     if (fichier == NULL) {
         printf("Erreur lors de l'ouverture de data_iris.csv !\n");
         return;

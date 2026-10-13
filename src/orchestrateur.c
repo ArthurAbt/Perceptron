@@ -7,9 +7,7 @@
 #include "donnees.h"
 #include "perceptron.h"
 
-void handler_depart() { // Cette fonction est vide est sert seulement à attendre SIGUSR1
-	printf("Le signal SIGUSR1 a été reçu !\n");
-}
+void handler_depart(){} // Cette fonction est vide est sert seulement à attendre SIGUSR1
 
 void executer_systeme_ipc(double longueur_sepale[150], double largeur_sepale[150], double longueur_petale[150], double largeur_petale[150], int famille[150]){
     int tube_e1[2]; // Cest 4 tubes permettront de transmettre les 4 caractéristiques des différentes fleurs
@@ -146,8 +144,6 @@ void executer_systeme_ipc(double longueur_sepale[150], double largeur_sepale[150
         close(tube_err[1]); // On garde uniquement garder ouvert tube_err[0] car on va chercher à lire l'erreur de calcul dedans
 
         sleep(1);   // On ajoute un temps d'attente afin d'être sûr que tous les fils aient le temps d'être crée AVANT l'envoi de SIGUSR1
-
-        printf("Moniteur : J'envoie le signal de départ au Lecteur.\n");
         kill(pid_lecteur, SIGUSR1); // Envoie du signal de départ
 
         read(tube_err[0], &erreur_p, sizeof(double));
