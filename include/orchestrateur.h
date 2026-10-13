@@ -10,4 +10,6 @@
  */
 void executer_systeme_ipc(double longueur_sepale[150], double largeur_sepale[150], double longueur_petale[150], double largeur_petale[150], int famille[150]);
 
+void my_handler();
+
 #endif

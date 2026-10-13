@@ -3,6 +3,10 @@
 
 /***
  * @brief Cette fonction parcours le fichier data_iris.csv et écrit ses valeurs dans les les 4 tableaux en paramètres
+ * @param longueur_sepale Tableau qui recevra les longueurs des 150 sépales (non-normalisée)
+ * @param largeur_sepale Contiendra les largeurs des 150 sépales (non-normalisée)
+ * @param longueur_petale Contiendra les longueurs des 150 pétales (non-normalisée)
+ * @param largeur_petale Contiendra les largeurs des 150 pétales brute (non-normalisée)
  * @param famille Contient la famille (0, 1, 2) de chaque iris d'entrée
  */
 void lire_donnees(double longueur_sepale[150], double largeur_sepale[150], double longueur_petale[150], double largeur_petale[150], int famille[150]);
@@ -28,16 +32,16 @@ void normalise(double donnees[150]);
 /***
  * @brief Cette fonction normalise les valeurs de tous les tableaux passés en paramètre
  * @param longueur_sepale Tableau qui contient initialement les 150 longueurs des sépales brut et qui recevra les longueurs des 150 sépales normalisés
- * @param largeur_sepale Contiendra les largeurs des 150 sépales normalisés
- * @param longueur_petale Contiendra les longueurs des 150 pétales normalisés
+ * @param largeur_sepale Contient les largeurs des 150 sépales normalisés
+ * @param longueur_petale Contient les longueurs des 150 pétales normalisés
  * @param largeur_petale Contient les largeurs des 150 pétales normalisés
  */
 void normalise_tout(double longueur_sepale[150], double largeur_sepale[150], double longueur_petale[150], double largeur_petale[150]);
 
 /***
- * @brief Cette fonction trouve et affiche la famille d'appartenance de la fleur et sa probabilité
+ * @brief Cette fonction fait passer les 4 entrées contenues par fleur dans le réseau de neurones, et met ses sorties dans proba_famoilles
  * @param fleur tableau contenant les 4 entrées de la fleur (longueur/largeur du sépale et longueur/largeur du pétale)
- * @param proba_familles proba d'appartenance à chaque famille
+ * @param proba_familles probabilités d'appartenance à chaque famille
  */
 void validation_1_donnee(double fleur[4], double proba_familles[3]);
 
