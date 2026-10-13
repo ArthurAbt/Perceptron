@@ -8,14 +8,14 @@ CFLAGS = -Wall -Wextra -Iinclude
 TARGET = code
 
 # Liste des fichiers objets
-OBJ = main.o donnees.o perceptron.o
+OBJ = main.o donnees.o perceptron.o orchestrateur.o
 
 # Règle principale (celle exécutée quand on tape "make")
 $(TARGET): $(OBJ)
 	$(CC) $(CFLAGS) -o $(TARGET) $(OBJ) -lm
 
 # Règles pour créer chaque fichier objet à partir des bons dossiers
-main.o: main.c include/donnees.h include/perceptron.h
+main.o: main.c include/donnees.h include/perceptron.h include/orchestrateur.h
 	$(CC) $(CFLAGS) -c main.c
 
 donnees.o: src/donnees.c include/donnees.h
@@ -23,6 +23,9 @@ donnees.o: src/donnees.c include/donnees.h
 
 perceptron.o: src/perceptron.c include/perceptron.h
 	$(CC) $(CFLAGS) -c src/perceptron.c -o perceptron.o
+
+orchestrateur.o: src/orchestrateur.c include/orchestrateur.h
+	$(CC) $(CFLAGS) -c src/orchestrateur.c -o orchestrateur.o
 
 # Règle pour tout nettoyer (taper "make clean")
 clean:
