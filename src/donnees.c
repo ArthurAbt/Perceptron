@@ -66,7 +66,7 @@ void normalise_tout(float longueur_sepale[150], float largeur_sepale[150], float
     return;
 }
 
-void valdation_1_donnee(double fleur[4], double resultats[2]) {
+void valdation_1_donnee(double fleur[4], double resultats[3]) {
     double coef_MAT1[TAILLE_entree+1][NB_neurones_C1] = {
 		{ +1.703661357392334, +2.763631108685933, -2.17236310620485}, 
 		{+1.560385693578073, +3.973334575425574, -5.687438139503607}, 
