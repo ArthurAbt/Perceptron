@@ -68,18 +68,18 @@ void normalise_tout(float longueur_sepale[150], float largeur_sepale[150], float
 
 void valdation_1_donnee(double fleur[4], double resultats[2]) {
     double coef_MAT1[TAILLE_entree+1][NB_neurones_C1] = {
-		{ +1.70, +2.58, -1.87}, 
-		{+1.56, +4.04, -5.81}, 
-		{-2.68, -3.84, +4.21}, 
-		{-0.02, -6.49, +6.97}, 
-		{-4.07, +7.31, -8.16}
+		{ +1.703661357392334, +2.763631108685933, -2.17236310620485}, 
+		{+1.560385693578073, +3.973334575425574, -5.687438139503607}, 
+		{-2.681166224391079, -3.131516653284507, +3.143949358790173}, 
+		{-0.02639163020174042, -6.500059250638189, +7.00651555282157}, 
+		{-4.077513418151064, +7.565128560821631, -8.505618677932459}
     };
 			
     double coef_MAT2[NB_neurones_C1+1][NB_neurones_C2] = {
-		{ +9.00, -10.75, -1.38},
-		{-1.12, +4.68, -5.82}, 
-		{-3.43, -5.32, +5.60}, 
-		{-3.30, +1.42, -1.22 }
+		{ +9.001713871164204, -10.52803062971971, -1.602240268200863},
+		{-1.12770505333443, +4.930756962081604, -6.057546672046951}, 
+		{-3.42697126393812, -5.601264307780169, +5.878238858982915}, 
+		{-3.31644629415654, +1.215105079193245, -1.007589578200665 }
     };
 
     prediction(fleur, coef_MAT1, coef_MAT2, resultats); // Cette fonction met les biais au bon endroit et donne pour chaque neurone le bon coeff. Elle prends aussi en parametres les entrées de la fleur. Surement a reecrire vu que nos données ne sont pas tous au meme endroit.
