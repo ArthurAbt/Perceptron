@@ -24,7 +24,7 @@ obj:
 
 # Règles pour créer chaque fichier objet (on ajoute "| obj" comme dépendance pour garantir sa création)
 obj/main.o: src/main.c include/donnees.h include/perceptron.h include/orchestrateur.h include/memoire.h | obj
-	$(CC) $(CFLAGS) -c main.c -o obj/main.o
+	$(CC) $(CFLAGS) -c src/main.c -o obj/main.o
 
 obj/donnees.o: src/donnees.c include/donnees.h | obj
 	$(CC) $(CFLAGS) -c src/donnees.c -o obj/donnees.o
