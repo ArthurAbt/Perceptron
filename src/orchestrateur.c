@@ -1,11 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
 #include "sys/wait.h"
 
 #include "orchestrateur.h"
 #include "donnees.h"
 #include "perceptron.h"
+#include "memoire.h"
 
 void handler_depart(){} // Cette fonction est vide est sert seulement à attendre SIGUSR1
 
@@ -25,10 +28,31 @@ void executer_systeme_ipc(double longueur_sepale[150], double largeur_sepale[150
     double fleur[4];
     double proba_familles[3];
     double sorties[3];
+    
+    
+    int shmid;
+    SEMAPHORE sem;
+    key_t cle1;
+    short val_init[1]={0};
+
     int i, j;
+    
+    
     double erreur = 0, erreur_p;
     
-    pid_t pid_application, pid_lecteur, pid_analyseur;
+    pid_t pid_couche1, pid_couche2, pid_lecteur, pid_analyseur;
+
+
+    typedef struct {
+        double e1;
+        double e2;
+        double e3;
+        double e4;
+    } ENTREES;
+
+
+    ENTREES *ptr;
+
 
     if (pipe(tube_e1) == -1 || pipe(tube_e2) == -1 || pipe(tube_e3)== -1 || pipe(tube_e4)== -1 || pipe(tube_s1)== -1 || pipe(tube_s2)== -1 || pipe(tube_s3) == -1 || pipe(tube_satt) == -1 || pipe(tube_err) == -1) {  // Gestion erreur des pipe
         perror("pipe");
@@ -61,31 +85,103 @@ void executer_systeme_ipc(double longueur_sepale[150], double largeur_sepale[150
         exit(0);
     }
 
-    if ((pid_application = fork()) == 0){ // On est un fils et on effectue la partie Application
 
-        close(tube_e1[1]);  // On ferme les tubes (écriture) pour pouvoir lire
+    shmid = shmget(IPC_PRIVATE, sizeof(ENTREES), IPC_CREAT|0666);
+    if (shmid == -1) {
+    perror("shmget");
+    exit(EXIT_FAILURE);
+     }
+
+
+     cle1 = Creer_cle("src/orchestrateur.c");
+     sem=Creer_Utiliser_sem(cle1,1,val_init);
+
+
+    if ((pid_couche1 = fork()) == 0){
+
+
+        ptr = (ENTREES *) shmat(shmid, 0, 0);
+        if ( ptr == (ENTREES *)-1 ) {
+            perror("shmat");
+            exit(EXIT_FAILURE);
+        }
+
+        close(tube_e1[1]);  // On ferme les tubes (lecture) pour pouvoir écrire
         close(tube_e2[1]);
         close(tube_e3[1]);
         close(tube_e4[1]);
 
-        close(tube_s1[0]);  // On ferme les tubes (lecture) pour pouvoir écrire
-        close(tube_s2[0]);
-        close(tube_s3[0]);
-
         for (i = 0; i < 150; i++) {
-            read(tube_e1[0], &fleur[0], sizeof(double));
-            read(tube_e2[0], &fleur[1], sizeof(double));
-            read(tube_e3[0], &fleur[2], sizeof(double));
-            read(tube_e4[0], &fleur[3], sizeof(double));
+            read(tube_e1[0], &(ptr->e1), sizeof(double));
+            read(tube_e2[0], &(ptr->e2), sizeof(double));
+            read(tube_e3[0], &(ptr->e3), sizeof(double));
+            read(tube_e4[0], &(ptr->e4), sizeof(double));
 
-            validation_1_donnee(fleur, proba_familles); // Coeur du programme, c'est le réseau de neurones
+            V(sem);
+            P(sem);
 
-            write(tube_s1[1], &proba_familles[0], sizeof(double));
-            write(tube_s2[1], &proba_familles[1], sizeof(double));
-            write(tube_s3[1], &proba_familles[2], sizeof(double));
         }
 
+
+        /* Detachement de la memoire partagee */
+        shmdt(ptr);
+        
+        /* Destruction du segment de memoire partagee */
+        shmctl(shmid, IPC_RMID, NULL);
+
+
         exit(0);
+
+
+    }
+
+    if ((pid_couche2 = fork()) == 0){ // On est un fils et on effectue la partie couche 2
+
+            
+
+            ptr = (ENTREES *) shmat(shmid, 0, 0);
+            if ( ptr == (ENTREES *)-1 ) {
+                perror("shmat");
+                exit(EXIT_FAILURE);
+            }
+
+            
+
+
+            close(tube_s1[0]);  // On ferme les tubes (lecture) pour pouvoir écrire
+            close(tube_s2[0]);
+            close(tube_s3[0]);
+
+            for (i = 0; i < 150; i++) {
+
+                P(sem); // Attends que couche 1 est fini.
+                fleur[0] = ptr->e1;
+                fleur[1] = ptr->e2;
+                fleur[2] = ptr->e3;
+                fleur[3] = ptr->e4;
+
+                
+
+                validation_1_donnee(fleur, proba_familles); // Coeur du programme, c'est le réseau de neurones
+
+                write(tube_s1[1], &proba_familles[0], sizeof(double));
+                write(tube_s2[1], &proba_familles[1], sizeof(double));
+                write(tube_s3[1], &proba_familles[2], sizeof(double));
+
+                V(sem);
+            }
+
+
+            /* Destruction du semaphore */
+            Detruire_sem(sem);
+
+            /* Detachement de la memoire partagee */
+            shmdt(ptr);
+            
+            /* Destruction du segment de memoire partagee */
+            shmctl(shmid, IPC_RMID, NULL);
+
+            exit(0);
     }
 
     if ((pid_analyseur = fork()) == 0) {  // On est un fils et on effectue la partie Analyseur
