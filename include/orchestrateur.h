@@ -1,6 +1,13 @@
 #ifndef ORCHESTRATEUR_H
 #define ORCHESTRATEUR_H
 
+    typedef struct {
+        double e1;
+        double e2;
+        double e3;
+        double e4;
+    } ENTREES;
+
 /***
  * @brief Cette fonction gère toute la partie communication
  * @param longueur_sepale tableau contenant la longueur des 150 sépales

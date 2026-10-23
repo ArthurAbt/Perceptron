@@ -3,14 +3,14 @@
 #include <unistd.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
-#include "sys/wait.h"
+#include <sys/wait.h>
 
 #include "orchestrateur.h"
 #include "donnees.h"
 #include "perceptron.h"
 #include "memoire.h"
 
-void handler_depart(){} // Cette fonction est vide est sert seulement à attendre SIGUSR1
+void handler_depart(){} // Cette fonction est vide est sert seulement à attendre la réception de SIGUSR1
 
 void executer_systeme_ipc(double longueur_sepale[150], double largeur_sepale[150], double longueur_petale[150], double largeur_petale[150], int famille[150]){
     int tube_e1[2]; // Cest 4 tubes permettront de transmettre les 4 caractéristiques des différentes fleurs
@@ -29,30 +29,16 @@ void executer_systeme_ipc(double longueur_sepale[150], double largeur_sepale[150
     double proba_familles[3];
     double sorties[3];
     
-    
-    int shmid;
     SEMAPHORE sem;
-    key_t cle1;
+    key_t cle;
+    int shmid;    
     short val_init[1]={0};
 
     int i, j;
-    
-    
     double erreur = 0, erreur_p;
     
     pid_t pid_couche1, pid_couche2, pid_lecteur, pid_analyseur;
-
-
-    typedef struct {
-        double e1;
-        double e2;
-        double e3;
-        double e4;
-    } ENTREES;
-
-
     ENTREES *ptr;
-
 
     if (pipe(tube_e1) == -1 || pipe(tube_e2) == -1 || pipe(tube_e3)== -1 || pipe(tube_e4)== -1 || pipe(tube_s1)== -1 || pipe(tube_s2)== -1 || pipe(tube_s3) == -1 || pipe(tube_satt) == -1 || pipe(tube_err) == -1) {  // Gestion erreur des pipe
         perror("pipe");
@@ -86,27 +72,23 @@ void executer_systeme_ipc(double longueur_sepale[150], double largeur_sepale[150
     }
 
 
-    shmid = shmget(IPC_PRIVATE, sizeof(ENTREES), IPC_CREAT|0666);
+    shmid = shmget(IPC_PRIVATE, sizeof(ENTREES), IPC_CREAT|0666);   // Crée un segment de mémoire partagée de taille ENTREES
     if (shmid == -1) {
-    perror("shmget");
-    exit(EXIT_FAILURE);
+        perror("shmget");
+        exit(EXIT_FAILURE);
      }
 
+     cle = Creer_cle("src/orchestrateur.c");
+     sem = Creer_Utiliser_sem(cle,1,val_init);
 
-     cle1 = Creer_cle("src/orchestrateur.c");
-     sem=Creer_Utiliser_sem(cle1,1,val_init);
-
-
-    if ((pid_couche1 = fork()) == 0){
-
-
-        ptr = (ENTREES *) shmat(shmid, 0, 0);
-        if ( ptr == (ENTREES *)-1 ) {
+    if ((pid_couche1 = fork()) == 0) {   // On est un fils et on effectue la partie couche1 du réseau de neurones
+        ptr = (ENTREES *) shmat(shmid, 0, 0);   // On englobe ptr dans la mémoire du processus
+        if (ptr == (ENTREES *) -1) {
             perror("shmat");
             exit(EXIT_FAILURE);
         }
 
-        close(tube_e1[1]);  // On ferme les tubes (lecture) pour pouvoir écrire
+        close(tube_e1[1]);  // On ferme les tubes (écriture) pour pouvoir lire
         close(tube_e2[1]);
         close(tube_e3[1]);
         close(tube_e4[1]);
@@ -117,8 +99,8 @@ void executer_systeme_ipc(double longueur_sepale[150], double largeur_sepale[150
             read(tube_e3[0], &(ptr->e3), sizeof(double));
             read(tube_e4[0], &(ptr->e4), sizeof(double));
 
-            V(sem);
-            P(sem);
+            V(sem); // Autorise couche2 à effectuer une itération
+            P(sem); // Bloque juusqu'à que couche2 aifinit son itération
 
         }
 
@@ -135,18 +117,12 @@ void executer_systeme_ipc(double longueur_sepale[150], double largeur_sepale[150
 
     }
 
-    if ((pid_couche2 = fork()) == 0){ // On est un fils et on effectue la partie couche 2
-
-            
-
-            ptr = (ENTREES *) shmat(shmid, 0, 0);
+    if ((pid_couche2 = fork()) == 0){ // On est un fils et on effectue la partie couche2 du réseau de neurones
+            ptr = (ENTREES *) shmat(shmid, 0, 0);   // On inclut la mémoire partagée dans la mémoire du processus
             if ( ptr == (ENTREES *)-1 ) {
                 perror("shmat");
                 exit(EXIT_FAILURE);
             }
-
-            
-
 
             close(tube_s1[0]);  // On ferme les tubes (lecture) pour pouvoir écrire
             close(tube_s2[0]);
@@ -158,9 +134,7 @@ void executer_systeme_ipc(double longueur_sepale[150], double largeur_sepale[150
                 fleur[0] = ptr->e1;
                 fleur[1] = ptr->e2;
                 fleur[2] = ptr->e3;
-                fleur[3] = ptr->e4;
-
-                
+                fleur[3] = ptr->e4;                
 
                 validation_1_donnee(fleur, proba_familles); // Coeur du programme, c'est le réseau de neurones
 
@@ -168,9 +142,8 @@ void executer_systeme_ipc(double longueur_sepale[150], double largeur_sepale[150
                 write(tube_s2[1], &proba_familles[1], sizeof(double));
                 write(tube_s3[1], &proba_familles[2], sizeof(double));
 
-                V(sem);
+                V(sem); // Autorise couche1 à effectuer une nouvelle itération
             }
-
 
             /* Destruction du semaphore */
             Detruire_sem(sem);
